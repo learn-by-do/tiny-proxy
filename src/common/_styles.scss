@@ -1,0 +1,9 @@
+$mainColor: hsl(204, 80%, 54%);
+$hintColor: hsl(0, 0%, 80%);
+$errorColor: hsl(0, 80%, 54%);
+$okColor: hsl(140, 80%, 54%);
+$containerColor: rgba($hintColor, .4);
+
+@mixin easeInOutTrans($target: all, $t:.15s) {
+  transition: $target ease-in-out $t;
+}

@@ -1,0 +1,27 @@
+{
+  "name": "这是名字",
+  "version": "0.1",
+  "description": "这是描述哦",
+  "manifest_version": 2,
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": true
+  },
+  "permissions": [
+    "notifications",
+    "activeTab",
+    "proxy",
+    "storage",
+    "http://*/*",
+    "https://*/*",
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "images/icon48.png"
+  },
+  "icons": {
+    "48": "images/icon48.png"
+  }
+}

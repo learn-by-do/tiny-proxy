@@ -1,0 +1,72 @@
+$normalWidth: 40px;
+$normalBorderWidth: 2px;
+$smallWidth: 32px;
+$smallBorderWidth: 1px;
+
+@mixin units($w: $normalWidth, $bw: $normalBorderWidth) {
+  $width: $w;
+  $height: $w / 2;
+
+  $borderWidth: $bw;
+  $sliderHeight: $height - $borderWidth * 2;
+}
+
+.Switch {
+  $width: $normalWidth;
+  $height: $width / 2;
+  $borderWidth: $normalBorderWidth;
+  $sliderHeight: $height - $borderWidth * 2;
+  display: inline-block;
+  width: $width;
+  height: $height;
+  background-color: #ccc;
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+
+  .Checkbox {
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    &:checked + .Slider {
+      background-color: #2196f3;
+      justify-content: flex-end;
+    }
+  }
+
+  .Slider {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: $borderWidth;
+    box-sizing: border-box;
+    justify-content: flex-start;
+    transition: all ease-in-out 0.15s;
+    &:before {
+      content: '';
+      display: inline-block;
+      width: $sliderHeight;
+      height: $sliderHeight;
+      background: #fff;
+    }
+  }
+  &--small {
+    $width: $smallWidth;
+    $height: $width / 2;
+    $borderWidth: $smallBorderWidth;
+    $sliderHeight: $height - $borderWidth * 2;
+    width: $width;
+    height: $height;
+    .Slider {
+      padding: $borderWidth;
+      &:before {
+        width: $sliderHeight;
+        height: $sliderHeight;
+      }
+    }
+  }
+}

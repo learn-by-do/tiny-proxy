@@ -1,0 +1,38 @@
+{
+  "name": "tiny-proxy",
+  "private": true,
+  "version": "0.1.0",
+  "main": "index.js",
+  "repository": "git@github.com:learn-by-do/tiny-proxy.git",
+  "author": "NoName4Me <anich.evas@gmail.com>",
+  "scripts": {
+    "build": "webpack --config build/webpack.prod.js",
+    "dev": "webpack --config build/webpack.dev.js",
+    "watch": "webpack -w --config build/webpack.dev.js",
+    "lint": "tslint 'src/**/*.{ts, tsx}'"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "0.0.91",
+    "@types/react": "^16.8.16",
+    "@types/react-dom": "^16.8.4",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.0.5",
+    "css-loader": "^2.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^6.2.1",
+    "tslint-react": "^4.0.0",
+    "typescript": "^3.4.5",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.2",
+    "webpack-merge": "^4.2.1"
+  },
+  "dependencies": {
+    "clsx": "^1.0.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  }
+}

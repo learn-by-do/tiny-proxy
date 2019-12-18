@@ -1,0 +1,28 @@
+@import '../../common/styles';
+
+.IconButton {
+  
+}
+
+.Icon {
+  transition: all ease-in-out .15s;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  color: $mainColor;
+  &:hover {
+    opacity: .9;
+  }
+}
+
+.Icon--trash {
+  color: $errorColor;
+}
+
+.Icon--plus {
+  color: $mainColor;
+}
+
+.Icon--minus {
+  color: $errorColor;
+}

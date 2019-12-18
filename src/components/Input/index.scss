@@ -1,0 +1,25 @@
+@import '../../common/styles';
+
+.Input {
+  display: inline-block;
+  // min-width: 100%;
+  border: 1px solid $hintColor;
+  transition: all ease-in-out .15s;
+  padding: 4px 8px;
+  &:hover {
+    border-color: rgba($mainColor, .3);
+  }
+  &:focus {
+    border-color: rgba($mainColor, .6);
+    outline: none;
+  }
+  &--readonly {
+    &,&:hover,&:focus {
+      border-color: transparent;
+      border-bottom-color: rgba($hintColor,.2);
+    }
+    &:hover {
+      border-bottom-color: rgba($mainColor, .3)
+    }
+  }
+}

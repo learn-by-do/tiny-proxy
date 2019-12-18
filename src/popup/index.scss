@@ -1,0 +1,55 @@
+@import '../common/styles';
+
+.Popup {
+  min-width: 600px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid $containerColor;
+  &__Head {
+    height: 20px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    & > * {
+      margin-right: 5px;
+    }
+  }
+  &__Body {
+    display: flex;
+    flex: 2;
+  }
+}
+.LeftPanel {
+  padding: 0;
+  box-sizing: border-box;
+  border-right: 1px solid $containerColor;
+  flex: 0 0 200px;
+  &__Item {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    @include easeInOutTrans();
+    &:hover {
+      background-color: rgba($hintColor, 0.2);
+    }
+    &--selected {
+      background-color: rgba($mainColor, 0.2);
+      &:hover {
+        background-color: rgba($mainColor, 0.2);
+      }
+    }
+    .Switch,
+    .Input {
+      margin-right: 5px;
+    }
+  }
+}
+
+.RightPanel {
+  padding: 10px;
+  .Item {
+    margin-top: 10px;
+  }
+}

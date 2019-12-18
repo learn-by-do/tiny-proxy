@@ -1,0 +1,11 @@
+
+.Item {
+  display: flex;
+  align-items: center;
+  .Input {
+    flex: 2 50%;
+  }
+  .Icon {
+    padding: 0 4px;
+  }
+}

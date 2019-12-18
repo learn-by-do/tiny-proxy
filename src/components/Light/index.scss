@@ -1,0 +1,27 @@
+@import '../../common/styles';
+
+$c: $hintColor;
+$w: 16px;
+.Light {
+  width: $w;
+  height: $w;
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  cursor: pointer;
+  background-image: radial-gradient(
+    rgba($c, 0.05),
+    rgba($c, 0.2) 40%,
+    rgba($c, 0.6) 80%,
+    rgba($c, 0.8) 90%,
+    $c
+  );
+  @include easeInOutTrans();
+  &--on {
+    $c: $okColor;
+    background-image: radial-gradient(rgba($c, 0.9), $c 90%, $c);
+    box-shadow: 0 0 6px 2px rgba($c, 0.6);
+  }
+}
