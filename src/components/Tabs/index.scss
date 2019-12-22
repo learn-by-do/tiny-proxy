@@ -1,0 +1,24 @@
+@import '../../common/styles';
+
+$border: 1px solid rgba($hintColor, .3);
+.Tabs {
+  display: inline-flex;
+  font-size: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  .Tab {
+    height: 23px;
+    border: 1px solid transparent;
+    border-top: 2px solid transparent;
+    border-bottom: $border;
+    padding: 0 10px;
+    &--active {
+      color: $mainColor;
+      border-top-color: $mainColor;
+      border-radius: 4px 4px 0 0;
+      border-bottom-color: transparent;
+      border-left: $border;
+      border-right: $border;
+    }
+  }
+}

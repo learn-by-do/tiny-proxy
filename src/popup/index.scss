@@ -2,10 +2,8 @@
 
 .Popup {
   min-width: 600px;
-  min-height: 200px;
+  min-height: 400px;
   display: flex;
-  flex-direction: column;
-
   border: 1px solid $containerColor;
   &__Head {
     height: 20px;
@@ -14,6 +12,9 @@
     align-items: center;
     & > * {
       margin-right: 5px;
+    }
+    .Light {
+      margin-right: 10px;
     }
   }
   &__Body {
@@ -26,30 +27,43 @@
   box-sizing: border-box;
   border-right: 1px solid $containerColor;
   flex: 0 0 200px;
-  &__Item {
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    @include easeInOutTrans();
-    &:hover {
-      background-color: rgba($hintColor, 0.2);
-    }
-    &--selected {
-      background-color: rgba($mainColor, 0.2);
+  .ConfigList {
+    &__Item {
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      @include easeInOutTrans();
       &:hover {
-        background-color: rgba($mainColor, 0.2);
+        background-color: rgba($hintColor, 0.2);
       }
-    }
-    .Switch,
-    .Input {
-      margin-right: 5px;
+      &--selected {
+        background-color: rgba($mainColor, 0.2);
+        &:hover {
+          background-color: rgba($mainColor, 0.2);
+        }
+      }
+      .Switch,
+      .Input {
+        margin-right: 5px;
+      }
     }
   }
 }
 
 .RightPanel {
   padding: 10px;
-  .Item {
-    margin-top: 10px;
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  .Tabs {
+    flex: 0 0 20px;
+  }
+  &__Body {
+    flex: 2;
+    position: relative;
+    margin-top: 5px;
+    .Item {
+      margin-top: 5px;
+    }
   }
 }

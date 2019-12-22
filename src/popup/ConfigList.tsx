@@ -5,21 +5,21 @@ import Icon from '../components/Icon';
 import clsx from 'clsx';
 import { I_Config } from './Popup';
 
-type LeftPanel = {
+type ConfigListProps = {
   list: I_Config[];
   activeIndex: number;
   onActiveChange: (index: number) => void;
   onChange: (index: number, config: I_Config) => void;
   onRemove: (index: number) => void;
 };
-const LeftPanel = ({
+const ConfigList = ({
   list,
   activeIndex,
   onActiveChange,
   onChange,
   onRemove
-}: LeftPanel) => {
-  const rootCls = 'LeftPanel';
+}: ConfigListProps) => {
+  const rootCls = 'ConfigList';
   const itemCls = `${rootCls}__Item`;
   return (
     <div className={rootCls}>
@@ -55,4 +55,4 @@ const LeftPanel = ({
   );
 };
 
-export default LeftPanel;
+export default ConfigList;

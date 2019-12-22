@@ -1,0 +1,26 @@
+@import '../../common/styles';
+
+$margin: 10px;
+
+.TextArea {
+  position: absolute;
+  top: $margin;
+  left: $margin;
+  bottom: $margin;
+  right: $margin;
+  textarea {
+    padding: 5px;
+    width: 100%;
+    height: 100%;
+    resize: none;
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre;
+    &:focus {
+      outline: none;
+      border-color: rgba($mainColor, $activeOpacity);
+    }
+    &:hover {
+      border-color: rgba($mainColor, $hoverOpacity);
+    }
+  }
+}

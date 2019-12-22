@@ -7,3 +7,6 @@ $containerColor: rgba($hintColor, .4);
 @mixin easeInOutTrans($target: all, $t:.15s) {
   transition: $target ease-in-out $t;
 }
+
+$hoverOpacity: 0.3;
+$activeOpacity: 0.6;

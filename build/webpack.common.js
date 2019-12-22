@@ -43,7 +43,9 @@ module.exports = {
   },
   plugins: [
     new webpack.ProgressPlugin(),
-    new CleanWebpackPlugin(),
+    new CleanWebpackPlugin({
+      // cleanOnceBeforeBuildPatterns: ['src/**'] // 没什么用呀，watch mode 还是没有保留 staic 文件，https://github.com/johnagan/clean-webpack-plugin
+    }),
     new HtmlWebpackPlugin({
       chunks: ['popup'],
       template: 'src/popup/index.html',

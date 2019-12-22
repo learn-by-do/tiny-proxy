@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import LeftPanel from './LeftPanel';
+import ConfigList from './ConfigList';
 import RightPanel from './RightPanel';
 import './index.scss';
 import { sendMessage } from '../common/communication';
-import { DATA_KEY } from '../common/const';
+import { STORE_CONFIG_KEY } from '../common/const';
 import Icon from '../components/Icon';
-import Switch from '../components/Switch';
 import Light from '../components/Light';
+import { ACTION } from '../background';
 
 const initData: I_Config[] = [
   // {
@@ -35,25 +35,18 @@ export interface I_Config {
   config: I_Mapper[];
 }
 
-const disableProxy = () => {
-  sendMessage({ type: 'disable' });
-};
-
-const enableProxy = (data: I_Config[]) => {
-  sendMessage({ type: 'enable', data });
-};
-
 const Popup = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAllDisabled, setIsAllDisabled] = useState(true);
   const [data, setData] = useState<I_Config[]>(initData);
 
   useEffect(() => {
-    chrome.storage.sync.get([DATA_KEY], function(result) {
-      const data = result[DATA_KEY] || [];
-      console.log('Value currently is ' + data);
+    chrome.storage.sync.get([STORE_CONFIG_KEY], function(result) {
+      const storeConfig = result[STORE_CONFIG_KEY] || {};
+      console.log('Value currently is ' + storeConfig);
+      const data = storeConfig.data || [];
       setData(data);
-      enableProxy(data);
+      setIsAllDisabled(storeConfig.flag);
     });
   }, []);
   const handleChange = (selectedIdx: number, payload: I_Config) => {
@@ -84,37 +77,40 @@ const Popup = () => {
   };
 
   const handleSave = () => {
-    enableProxy(data);
+    sendMessage(ACTION.SAVE_DATA, data);
   };
 
   const toggleDisableAll = (val: boolean) => {
     setIsAllDisabled(val);
-    sendMessage({ type: 'disable' });
+    val && sendMessage({ type: ACTION.ENABLE_PROXY, data });
   };
   return (
     <div className="Popup">
-      <div className="Popup__Head">
-        <Light
-          value={isAllDisabled}
-          onChange={toggleDisableAll}
-          title={isAllDisabled ? '全部开启' : '全部关闭'}
-        />
-        <Icon type="save" onClick={handleSave} title="保存配置" />
-        <Icon type="plus" onClick={handleAdd} title="新增配置" />
-      </div>
-      <div className="Popup__Body">
-        <LeftPanel
+      <div className="LeftPanel">
+        <div className="Popup__Head">
+          <Light
+            value={isAllDisabled}
+            onChange={toggleDisableAll}
+            title={isAllDisabled ? '全部开启' : '全部关闭'}
+          />
+          <Icon type="save" onClick={handleSave} title="保存配置" />
+          <Icon type="plus" onClick={handleAdd} title="新增配置" />
+        </div>
+        <ConfigList
           activeIndex={activeIndex}
           onChange={handleChange}
           onRemove={handleRemove}
           list={data}
           onActiveChange={(idx: number) => setActiveIndex(idx)}
         />
+      </div>
+
+      {data[activeIndex] && (
         <RightPanel
           onChange={handleConfigChange}
-          config={data[activeIndex] ? data[activeIndex].config : []}
+          config={data[activeIndex].config || []}
         />
-      </div>
+      )}
     </div>
   );
 };

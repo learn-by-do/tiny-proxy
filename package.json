@@ -8,7 +8,7 @@
   "scripts": {
     "build": "webpack --config build/webpack.prod.js",
     "dev": "webpack --config build/webpack.dev.js",
-    "watch": "webpack -w --config build/webpack.dev.js",
+    "watch": "webpack --config build/webpack.dev.js -w",
     "lint": "tslint 'src/**/*.{ts, tsx}'"
   },
   "license": "MIT",

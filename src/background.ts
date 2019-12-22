@@ -1,7 +1,13 @@
 import { sendMessage, notify } from './common/communication';
 
-import { DATA_KEY, noop } from './common/const';
+import { STORE_CONFIG_KEY, noop } from './common/const';
 import { I_Config } from './popup/Popup';
+
+export const ACTION = {
+  SAVE_DATA: 'saveData',
+  DISABLE_PROXY: 'disableProxy',
+  ENABLE_PROXY: 'enableProxy',
+}
 
 chrome.runtime.onMessage.addListener(function({ type, data }, callback) {
   HUB[`${type}Proxy`](data);
@@ -9,15 +15,21 @@ chrome.runtime.onMessage.addListener(function({ type, data }, callback) {
 
 const HUB: { [key: string]: (data: I_Config[]) => void } = {
   disableProxy,
-  enableProxy
+  enableProxy,
+  saveData
 };
 
 let configData: I_Config[] = [];
+let configFlag = false;
 
 // ==== WebRequest way ====
 const isIP = (address: string) =>
   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/.test(address);
 
+const isHostname = (hostname: string) =>
+  /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(
+    hostname
+  );
 function getPatterns() {
   let res = [];
   res = configData.reduce((patterns, item) => {
@@ -25,7 +37,7 @@ function getPatterns() {
       for (let conf of item.config) {
         const { src } = conf;
         if (src) {
-          patterns.push(src);
+          patterns.push(isHostname(src) ? `*://${src}/*` : src);
         }
       }
     }
@@ -58,13 +70,19 @@ function redirect({ url }: chrome.webRequest.WebRequestBodyDetails) {
   }
 }
 
-function enableProxy(data: I_Config[]) {
+function saveData(data: I_Config[]) {
   configData = data;
-  chrome.storage.sync.set({ [DATA_KEY]: data }, function() {
-    console.log('Value is set to ' + data);
-  });
+  chrome.storage.sync.set(
+    { [STORE_CONFIG_KEY]: { flag: configFlag, data: configData } },
+    function() {
+      console.log('Value is set to ' + data);
+    }
+  );
+}
 
-  disableProxy();
+function enableProxy(data: I_Config[]) {
+  saveData(data);
+  removeListener();
   const patterns = getPatterns();
   patterns.length &&
     chrome.webRequest.onBeforeRequest.addListener(
@@ -77,9 +95,27 @@ function enableProxy(data: I_Config[]) {
 }
 
 function disableProxy() {
+  chrome.storage.sync.set(
+    { [STORE_CONFIG_KEY]: { flag: configFlag, data: configData } },
+    function() {
+      console.log('disabled proxy');
+    }
+  );
+  removeListener();
+}
+
+function removeListener() {
   if (chrome.webRequest.onBeforeRequest.hasListener(redirect)) {
     chrome.webRequest.onBeforeRequest.removeListener(redirect);
   }
+}
+
+startup();
+
+function startup() {
+  chrome.storage.sync.get(STORE_CONFIG_KEY, function(results) {
+
+  });
 }
 
 // ==== proxy ways ====
