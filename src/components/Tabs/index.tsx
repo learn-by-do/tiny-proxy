@@ -27,8 +27,10 @@ const Tabs = ({ activeIdx = 0, tabs, onChange }: TabsProps) => {
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = event => {
     const id = Number((event.target as HTMLButtonElement).dataset.id);
-    setActiveId(id);
-    onChange(id);
+    if (id >= 0 && id < tabs.length) {
+      setActiveId(id);
+      onChange(id);
+    }
   };
   return (
     <div className="Tabs" onClick={handleClick}>

@@ -35,18 +35,22 @@ export interface I_Config {
   config: I_Mapper[];
 }
 
+function log(msg: string) {
+  sendMessage({ payload: msg, from: 'popup' });
+}
+
 const Popup = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isAllDisabled, setIsAllDisabled] = useState(true);
+  const [isProxyOn, toggleProxyState] = useState(false);
   const [data, setData] = useState<I_Config[]>(initData);
 
   useEffect(() => {
     chrome.storage.sync.get([STORE_CONFIG_KEY], function(result) {
       const storeConfig = result[STORE_CONFIG_KEY] || {};
-      console.log('Value currently is ' + storeConfig);
+      log('storage data is: ' + JSON.stringify(storeConfig));
       const data = storeConfig.data || [];
       setData(data);
-      setIsAllDisabled(storeConfig.flag);
+      toggleProxyState(storeConfig.flag || false);
     });
   }, []);
   const handleChange = (selectedIdx: number, payload: I_Config) => {
@@ -77,21 +81,27 @@ const Popup = () => {
   };
 
   const handleSave = () => {
-    sendMessage(ACTION.SAVE_DATA, data);
+    sendMessage({
+      type: ACTION.SAVE_DATA,
+      payload: { flag: isProxyOn, data }
+    });
   };
 
-  const toggleDisableAll = (val: boolean) => {
-    setIsAllDisabled(val);
-    val && sendMessage({ type: ACTION.ENABLE_PROXY, data });
+  const setLightState = (val: boolean) => {
+    toggleProxyState(val);
+    sendMessage({
+      type: ACTION.ENABLE_PROXY,
+      payload: { flag: val, data }
+    });
   };
   return (
     <div className="Popup">
       <div className="LeftPanel">
         <div className="Popup__Head">
           <Light
-            value={isAllDisabled}
-            onChange={toggleDisableAll}
-            title={isAllDisabled ? '全部开启' : '全部关闭'}
+            value={isProxyOn}
+            onChange={setLightState}
+            title={isProxyOn ? '已开启，点击可关闭' : '已关闭，点击可开启'}
           />
           <Icon type="save" onClick={handleSave} title="保存配置" />
           <Icon type="plus" onClick={handleAdd} title="新增配置" />

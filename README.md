@@ -1,17 +1,20 @@
-# chrome-extension-ts-react
+# tiny-proxy
 
-> ⚒️ A project that speed up your developing `Chrome Extension` based on React & TypeScript & webpack.
+> 一个简单的快速切换 host、url 的 chrome 插件。
 
-## Usages
+点击[这里获取](./tiny-proxy.crx)，或通过源码编译。
 
 ```bash
-npm i
-
+# 开发构建
 npm run dev
 
-## dev in watch mode
-npm run watch
-
-## build
-npm run build
+# 生产构建
+npm build
 ```
+
+Menu ICONs from [font awesome](https://fontawesome.com/)。
+
+## 参考
+
+1. https://developer.chrome.com/extensions/getstarted
+2. https://www.cnblogs.com/liuxianan/p/chrome-plugin-develop.html

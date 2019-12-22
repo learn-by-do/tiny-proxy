@@ -1,3 +1,4 @@
+//TODO: not used now
 export function notify(msg: string, title = '', alwaysShow = false) {
   chrome.notifications.getPermissionLevel(level => {
     console.log('level: ', level);

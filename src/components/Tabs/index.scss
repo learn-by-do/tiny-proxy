@@ -5,9 +5,8 @@ $border: 1px solid rgba($hintColor, .3);
   display: inline-flex;
   font-size: 12px;
   cursor: pointer;
-  overflow: hidden;
   .Tab {
-    height: 23px;
+    // height: 25px;
     border: 1px solid transparent;
     border-top: 2px solid transparent;
     border-bottom: $border;

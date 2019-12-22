@@ -2,27 +2,25 @@ import { sendMessage, notify } from './common/communication';
 
 import { STORE_CONFIG_KEY, noop } from './common/const';
 import { I_Config } from './popup/Popup';
+import ConfigList from './popup/ConfigList';
+
+type I_Data = {
+  data: I_Config[];
+  flag: boolean;
+};
+
+let config: I_Data = {
+  flag: false,
+  data: []
+};
 
 export const ACTION = {
   SAVE_DATA: 'saveData',
   DISABLE_PROXY: 'disableProxy',
   ENABLE_PROXY: 'enableProxy',
-}
-
-chrome.runtime.onMessage.addListener(function({ type, data }, callback) {
-  HUB[`${type}Proxy`](data);
-});
-
-const HUB: { [key: string]: (data: I_Config[]) => void } = {
-  disableProxy,
-  enableProxy,
-  saveData
+  LOG: 'log'
 };
 
-let configData: I_Config[] = [];
-let configFlag = false;
-
-// ==== WebRequest way ====
 const isIP = (address: string) =>
   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/.test(address);
 
@@ -30,9 +28,36 @@ const isHostname = (hostname: string) =>
   /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(
     hostname
   );
+
+chrome.runtime.onMessage.addListener(function(
+  { type, payload, from },
+  callback
+) {
+  if (typeof payload === 'string') {
+    log(payload, from);
+  } else {
+    HUB[type](payload);
+  }
+});
+
+const colorMap: { [key: string]: string } = {
+  bg: 'color: blue',
+  popup: 'color: green'
+};
+function log(msg: string, from = 'bg') {
+  console.log(`%c [${from}]: ${msg}`, colorMap[from]);
+}
+
+const HUB: { [key: string]: (payload: I_Data) => void } = {
+  disableProxy,
+  enableProxy,
+  saveData
+};
+
+// ==== WebRequest way ====
 function getPatterns() {
   let res = [];
-  res = configData.reduce((patterns, item) => {
+  res = config.data.reduce((patterns, item) => {
     if (item.isActive) {
       for (let conf of item.config) {
         const { src } = conf;
@@ -49,7 +74,7 @@ function getPatterns() {
 function redirect({ url }: chrome.webRequest.WebRequestBodyDetails) {
   const matches = /https?:\/\/(.*?)(\/.*)/gi.exec(url);
 
-  for (let item of configData) {
+  for (let item of config.data) {
     if (item.isActive) {
       for (let conf of item.config) {
         const { src, dist } = conf;
@@ -62,7 +87,6 @@ function redirect({ url }: chrome.webRequest.WebRequestBodyDetails) {
 
         if (reg.test(url)) {
           const newUrl = url.replace(isIP(dist) ? src : reg, dist);
-          console.log('>>>', url, newUrl, src, dist);
           return { redirectUrl: newUrl };
         }
       }
@@ -70,18 +94,16 @@ function redirect({ url }: chrome.webRequest.WebRequestBodyDetails) {
   }
 }
 
-function saveData(data: I_Config[]) {
-  configData = data;
-  chrome.storage.sync.set(
-    { [STORE_CONFIG_KEY]: { flag: configFlag, data: configData } },
-    function() {
-      console.log('Value is set to ' + data);
-    }
-  );
+function saveData(payload: I_Data) {
+  config = { ...payload };
+  chrome.storage.sync.set({ [STORE_CONFIG_KEY]: payload }, function() {
+    log('value is saved: ' + JSON.stringify(payload));
+  });
 }
 
-function enableProxy(data: I_Config[]) {
-  saveData(data);
+function enableProxy(payload: I_Data) {
+  saveData(payload);
+  updateBadge();
   removeListener();
   const patterns = getPatterns();
   patterns.length &&
@@ -95,12 +117,11 @@ function enableProxy(data: I_Config[]) {
 }
 
 function disableProxy() {
-  chrome.storage.sync.set(
-    { [STORE_CONFIG_KEY]: { flag: configFlag, data: configData } },
-    function() {
-      console.log('disabled proxy');
-    }
-  );
+  config.flag = false;
+  updateBadge();
+  chrome.storage.sync.set({ [STORE_CONFIG_KEY]: config }, function() {
+    log('disabled proxy');
+  });
   removeListener();
 }
 
@@ -110,30 +131,23 @@ function removeListener() {
   }
 }
 
-startup();
 
-function startup() {
-  chrome.storage.sync.get(STORE_CONFIG_KEY, function(results) {
-
+function updateBadge() {
+  const { flag } = config;
+  chrome.browserAction.setBadgeText({ text: flag ? 'ON' : 'OFF' });
+  chrome.browserAction.setBadgeBackgroundColor({
+    color: flag ? [44, 232, 106, 255] : [204, 204, 204, 255]
   });
 }
 
-// ==== proxy ways ====
-function setProxy(cb = noop) {
-  const config = {
-    mode: 'pac_script',
-    pacScript: {
-      data:
-        'function FindProxyForURL(url, host) {\n' +
-        "  if (host == 'foobar.com')\n" +
-        "    return 'PROXY blackhole:80';\n" +
-        "  return 'DIRECT';\n" +
-        '}'
+function startup() {
+  chrome.storage.sync.get(STORE_CONFIG_KEY, function(results) {
+    if (results) {
+      config = { data: results.data || [], flag: results.flag || false };
     }
-  };
-  chrome.proxy.settings.set({ value: config, scope: 'regular' }, cb);
-}
+    updateBadge();
+  });
 
-function resetProxy(cb = noop) {
-  chrome.proxy.settings.clear({ scope: 'regular' }, cb);
+  chrome.webNavigation.onCommitted.addListener(updateBadge);
 }
+startup();

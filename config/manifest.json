@@ -1,7 +1,7 @@
 {
-  "name": "这是名字",
-  "version": "0.1",
-  "description": "这是描述哦",
+  "name": "switch-x",
+  "version": "1.0",
+  "description": "一个微型的 host、url 快速切换（代理）工具",
   "manifest_version": 2,
   "background": {
     "scripts": ["js/background.js"],
@@ -9,7 +9,7 @@
   },
   "permissions": [
     "notifications",
-    "activeTab",
+    "webNavigation",
     "proxy",
     "storage",
     "http://*/*",
@@ -19,9 +19,9 @@
   ],
   "browser_action": {
     "default_popup": "popup.html",
-    "default_icon": "images/icon48.png"
+    "default_icon": "images/icon64.png"
   },
   "icons": {
-    "48": "images/icon48.png"
+    "48": "images/icon64.png"
   }
 }
