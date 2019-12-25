@@ -90,7 +90,7 @@ const Popup = () => {
   const setLightState = (val: boolean) => {
     toggleProxyState(val);
     sendMessage({
-      type: ACTION.ENABLE_PROXY,
+      type: val ? ACTION.ENABLE_PROXY : ACTION.DISABLE_PROXY,
       payload: { flag: val, data }
     });
   };
